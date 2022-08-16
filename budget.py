@@ -3,7 +3,6 @@
 # self.name uses object reference, so that each object has it's own copy of the instance variable
 # self is the instance of the class, i.e. the object
 
-
 class Category:
     def __init__(self, name = ""):
         self.name = name.lower().capitalize()
@@ -39,7 +38,7 @@ class Category:
             self.ledger.append(transaction)
             return True
         else:
-            print("Not enough funds, transaction not recorded")
+            #print("Not enough funds, transaction not recorded")
             return False
 
     # transfer only when sufficient money
@@ -50,7 +49,7 @@ class Category:
             category.deposit(amount, "Transfer from " + self.name)
             return True
         else:
-            print("Not enough funds for a transaction")
+            #print("Not enough funds for a transaction")
             return False
             
     # define the print behavior of the object
@@ -71,17 +70,6 @@ class Category:
         return final
 
 
-food = Category("fOod")
-food.deposit(50, "Paycheck")
-food.deposit(50, "Parents")
-food.withdraw(25, "Mercadona is a bitch because they don't have eggs")
-#print(food)
-
-clothing = Category("ClOthiNg")
-clothing.deposit(125, "Refund")
-clothing.withdraw(50, "Shirt")
-
-
 # we take a list of categories as an input, and then iterate through them
 def create_spend_chart(inp):
     total = 0
@@ -91,18 +79,95 @@ def create_spend_chart(inp):
         for dict in category.ledger:
             if dict["amount"] < 0:
                 total = total + dict["amount"]
-    # then get the percentages, same process for them
+    # then get the percentages
+    # we need to account for having multiple withdrawals
+    # for each dict/transaction in the ledger we add up the category total (for withdrawals)
+    # once done with all transactions we calculate the percentage and commit
     li = list()
     for category in inp:
+        #print(category.ledger)
+        catamount = 0
         for dict in category.ledger:
-            if dict["amount"] < 0:
-                percentage = dict["amount"] / total
-                li.append((category.name, percentage))
-    print(li)
-    
-    # you iterate through the percentage on the table, substract -10 each time
+            if dict["amount"] > 0:
+                continue
+            catamount = catamount + dict["amount"]
+        percentage = catamount / total
+        li.append((category.name, percentage))
+    #print(li)
+
+    # make the header
+    wholechart = "Percentage spent by category\n"
+    # make the bar charts
+    perc = 100
+    line = ""
+    # for each percentage on the y-axis (vertical) we create a line
+    # you iterate through the percentage on the y-axis (vertical), substract -10 each time
     # you check if the perc of the category is equal to or greater than the label
     # if so you add the o
+    while perc >= 0:
+        # first we create the beginning
+        line = str(perc).rjust(3) + "|"
+        # then for each category we check if we should include an "o" to make the bar chart
+        for category in li:
+            if (category[1]*100) >= perc:
+                partline = " " + "o" + " "
+                line = line + partline
+            else:
+                partline = "   "
+                line = line + partline
+        # make a new line and concatenate to the whole thing
+        line = line + " \n"
+        wholechart = wholechart + line
+        perc = perc - 10
+    # add the horizontal line
+    length = len(li)*3 + 2
+    horline = (" "*4) + ("-"*length) + "\n"
+    wholechart = wholechart + horline
 
-create_spend_chart([food, clothing])
+    # add the categories vertically
+    # first find the longest string to know how far "down" we have to go
+    strlen = 0
+    for category in li:
+        if len(category[0]) > strlen:
+            strlen = len(category[0])
+    
+    # we're creating a number of lines based on the longest category
+    count = 0
+    while strlen > 0:
+        # each line starts with 4 spaces
+        line = " " * 4
+        # then for each category we try to get the letter and add it to the line
+        for category in li:
+            try:
+                partline = " " + category[0][count] + " "
+            except:
+                partline = " " * 3
+            # we join the line
+            line =  line + partline
+        # and then add the entire line to the final result
+        wholechart = wholechart + line + "\n"
+        count = count + 1
+        strlen = strlen - 1
+
+    return wholechart.rstrip()
+    
+
+food = Category("fOod")
+food.deposit(50, "Paycheck")
+food.deposit(50, "Parents")
+food.withdraw(50, "Mercadona is a bitch because they don't have eggs")
+food.withdraw(25, "Consum")
+#print(food)
+
+clothing = Category("ClOthiNg")
+clothing.deposit(225, "Refund")
+clothing.withdraw(100, "Shirt")
+clothing.transfer(50, food)
+
+gas = Category("gAS")
+gas.deposit(200, "payback")
+gas.withdraw(100, "Trip")
+
+#create_spend_chart([food, clothing, gas])
+print(create_spend_chart([food, clothing, gas]))
 
