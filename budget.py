@@ -51,10 +51,29 @@ class Category:
             print("Not enough funds for a transaction")
             return False
             
+    # define the print behavior of the object
+    # for each transaction (dict) in the ledger, we extract the amount and description
+    # we make a newline each time and add to the final format
+    # we get the length of the description to calculate where to put the amount
+    def __str__(self):
+        line1 = self.name.center(30, "*")
+        final = line1 + "\n"
+        for transaction in self.ledger:
+            spaces = len(transaction["description"][:23])
+            # format the numbers with 2 decimal places
+            formamount = "{:.2f}".format(float(transaction["amount"]))
+            linex = transaction["description"][:23] + str(formamount)[:7].rjust((30-spaces)) + "\n"
+            final = final + linex
+        
+        lastline = "Total: " + str("{:.2f}".format(float(self.get_balance())))[:7]
+        final = final + lastline
+        return final
+
 
 
 
 food = Category("Food")
-food.deposit(50, "Paycheck")
-food.deposit(55, "Paycheck2")
+food.deposit(1000, "Paycheck")
+food.deposit(25, "Parents")
+food.withdraw(35, "Mercadona is a bitch because they don't have eggs")
 print(food)
