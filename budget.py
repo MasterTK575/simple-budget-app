@@ -119,8 +119,9 @@ def create_spend_chart(inp):
         line = line + " \n"
         wholechart = wholechart + line
         perc = perc - 10
+    
     # add the horizontal line
-    length = len(li)*3 + 2
+    length = len(li)*3 + 1
     horline = (" "*4) + ("-"*length) + "\n"
     wholechart = wholechart + horline
 
@@ -145,29 +146,27 @@ def create_spend_chart(inp):
             # we join the line
             line =  line + partline
         # and then add the entire line to the final result
-        wholechart = wholechart + line + "\n"
+        if strlen > 1:
+            wholechart = wholechart + line + " \n"
+        else:
+            wholechart = wholechart + line + " "
         count = count + 1
         strlen = strlen - 1
 
-    return wholechart.rstrip()
+    return wholechart
     
 
+business = Category("business")
+business.deposit(900, "deposit")
+business.withdraw(10.99)
+
 food = Category("fOod")
-food.deposit(50, "Paycheck")
-food.deposit(50, "Parents")
-food.withdraw(50, "Mercadona is a bitch because they don't have eggs")
-food.withdraw(25, "Consum")
-#print(food)
+food.deposit(900, "deposit")
+food.withdraw(105.55)
 
-clothing = Category("ClOthiNg")
-clothing.deposit(225, "Refund")
-clothing.withdraw(100, "Shirt")
-clothing.transfer(50, food)
+entertainment = Category("entertainment")
+entertainment.deposit(900, "deposit")
+entertainment.withdraw(33.40)
 
-gas = Category("gAS")
-gas.deposit(200, "payback")
-gas.withdraw(100, "Trip")
-
-#create_spend_chart([food, clothing, gas])
-print(create_spend_chart([food, clothing, gas]))
+print(create_spend_chart([business, food, entertainment]))
 
