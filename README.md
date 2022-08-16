@@ -16,3 +16,5 @@ What I've learned:
     2. How to use the constructor method to assign characteristics
     3. How to make methods for classes (and remembering to use self to refer to the instance)
     4. How to use methods inside methods/functions to make the code look cleaner and simpler
+    5. Using lists, tuples and dictionaries; indexing lists and tuples to find values; finding keys in dictionaries
+    6. How to aling strings; How to limit strings; How to limit decimal places for floats
