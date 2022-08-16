@@ -7,9 +7,12 @@ Besides the Category class, create a function (outside of the class) called crea
 
 Process:
     1. Create the Category class that can take various instances
-    2. Create the deposit and withdraw methods
-    3. create the get_balance method
+    2. Create the deposit
+    3. Create the get_balance method (bc. withdraw methods needs to know the balance)
+    4. Create the withdraw method
 
 What I've learned:
     1. How to create classes in python
-    2. How to make methods for classes
+    2. How to use the constructor method to assign characteristics
+    3. How to make methods for classes (and remembering to use self to refer to the instance)
+    4. How to use methods inside methods/functions to make the code look cleaner and simpler
