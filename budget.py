@@ -2,9 +2,11 @@
 # _init_ to create some instance variables
 # self.name uses object reference, so that each object has it's own copy of the instance variable
 # self is the instance of the class, i.e. the object
+
+
 class Category:
     def __init__(self, name = ""):
-        self.name = name
+        self.name = name.lower().capitalize()
         ledger = list()
         self.ledger = ledger
     
@@ -64,16 +66,43 @@ class Category:
             formamount = "{:.2f}".format(float(transaction["amount"]))
             linex = transaction["description"][:23] + str(formamount)[:7].rjust((30-spaces)) + "\n"
             final = final + linex
-        
         lastline = "Total: " + str("{:.2f}".format(float(self.get_balance())))[:7]
         final = final + lastline
         return final
 
 
+food = Category("fOod")
+food.deposit(50, "Paycheck")
+food.deposit(50, "Parents")
+food.withdraw(25, "Mercadona is a bitch because they don't have eggs")
+#print(food)
+
+clothing = Category("ClOthiNg")
+clothing.deposit(125, "Refund")
+clothing.withdraw(50, "Shirt")
 
 
-food = Category("Food")
-food.deposit(1000, "Paycheck")
-food.deposit(25, "Parents")
-food.withdraw(35, "Mercadona is a bitch because they don't have eggs")
-print(food)
+# we take a list of categories as an input, and then iterate through them
+def create_spend_chart(inp):
+    total = 0
+    # first calculate the global total - we only want the withdrawals
+    # so we have to go into each dict/transaction of the categories ledger
+    for category in inp:
+        for dict in category.ledger:
+            if dict["amount"] < 0:
+                total = total + dict["amount"]
+    # then get the percentages, same process for them
+    li = list()
+    for category in inp:
+        for dict in category.ledger:
+            if dict["amount"] < 0:
+                percentage = dict["amount"] / total
+                li.append((category.name, percentage))
+    print(li)
+    
+    # you iterate through the percentage on the table, substract -10 each time
+    # you check if the perc of the category is equal to or greater than the label
+    # if so you add the o
+
+create_spend_chart([food, clothing])
+
